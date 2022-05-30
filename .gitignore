@@ -2,4 +2,8 @@ build
 *.sublime-*
 compile_commands.json
 .cache
-
+**/*.o
+**/*.dll
+**/*.so
+**/*.dynlib
+.sconsign.dblite
