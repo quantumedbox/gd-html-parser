@@ -1,0 +1,7 @@
+[submodule "sigil-gumbo"]
+	path = sigil-gumbo
+	url = https://github.com/Sigil-Ebook/sigil-gumbo
+[submodule "godot-cpp"]
+	path = godot-cpp
+	url = https://github.com/godotengine/godot-cpp
+	branch = 3.x
