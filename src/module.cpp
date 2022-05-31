@@ -2,6 +2,7 @@
 
 #include <cassert>
 #include <cstddef>
+#include <optional>
 
 #include <Godot.hpp>
 #include <Variant.hpp>
@@ -50,7 +51,8 @@ godot::Array HTMLParser::parse_contents(GumboElement elem) const {
   GumboVector children = elem.children;
   for (unsigned int i = 0; i < children.length; ++i) {
     GumboNode *child = static_cast<GumboNode*>(children.data[i]);
-    result.append(this->parse_node(child));
+    if (auto parse_result = this->parse_node(child))
+      result.append(parse_result.value());
   }
 
   return result;
@@ -68,7 +70,7 @@ godot::Dictionary HTMLParser::parse_attributes(GumboElement elem) const {
   return result;
 }
 
-godot::Dictionary HTMLParser::parse_node(const GumboNode *const node) const {
+std::optional<godot::Dictionary> HTMLParser::parse_node(const GumboNode *const node) const {
   godot::Dictionary result;
 
   bool could_have_children = false;
@@ -76,7 +78,8 @@ godot::Dictionary HTMLParser::parse_node(const GumboNode *const node) const {
 
   switch (node->type) {
     case GUMBO_NODE_DOCUMENT: {
-      result["type"] = "document"; // todo: Technically document is `element` by HTML spec
+      result["type"] = "document";
+      // todo: Get its name?
       if (node->v.document.has_doctype) {
         godot::String public_identifier{node->v.document.public_identifier};
         if (!public_identifier.empty())
@@ -122,11 +125,12 @@ godot::Dictionary HTMLParser::parse_node(const GumboNode *const node) const {
         result["type"] = "whitespace";
         result["text"] = node->v.text.text; // todo: Should it capture original input instead?
       }
+      else return {}; // Nothing
       break;
     }
-    // default: {
-    //   godot::Godot::print_warning("Unkown node type encountered", __func__, __FILE__, __LINE__);
-    // }
+    default: {
+      godot::Godot::print_warning("Unkown node type encountered", __func__, __FILE__, __LINE__);
+    }
   }
 
   if (could_have_children) {
@@ -141,7 +145,7 @@ godot::Dictionary HTMLParser::parse_node(const GumboNode *const node) const {
       result["attributes"] = attribs;
   }
 
-  return result;
+  return {result};
 }
 
 GumboOptions HTMLParser::collect_options() const {
@@ -174,7 +178,10 @@ godot::Dictionary HTMLParser::parse(const godot::String text) const {
     return godot::Dictionary{};
   }
 
-  godot::Dictionary result{this->parse_node(output->document)};
+  godot::Dictionary result;
+
+  if (auto res = this->parse_node(output->document))
+    result = {res.value()};
 
   gumbo_destroy_output(output);
   return result;

@@ -90,10 +90,12 @@ def bool_to_option(val: bool) -> str:
 if env['use_llvm']:
     env['CC'] = 'clang'
     env['CXX'] = 'clang++'
+    env.Append(CCFLAGS=['-std=c++17'])
 
 if env['use_mingw']:
     env['CC'] = 'gcc'
     env['CXX'] = 'g++'
+    env.Append(CCFLAGS=['-std=c++17'])
 
 if env['platform'] == '':
     print("No valid target platform selected.")

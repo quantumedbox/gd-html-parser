@@ -1,5 +1,7 @@
 #pragma once
 
+#include <optional>
+
 #include <Godot.hpp>
 #include <Variant.hpp>
 #include <Node.hpp>
@@ -26,7 +28,7 @@ private:
   bool collect_whitespace;
 
   GumboOptions collect_options() const;
-  godot::Dictionary parse_node(const GumboNode *const node) const;
+  std::optional<godot::Dictionary> parse_node(const GumboNode *const node) const;
   godot::Array parse_contents(GumboElement elem) const;
   godot::Dictionary parse_attributes(GumboElement elem) const;
 };
