@@ -26,6 +26,7 @@ private:
   int max_errors;
 
   bool collect_whitespace;
+  bool collect_comments;
 
   GumboOptions collect_options() const;
   std::optional<godot::Dictionary> parse_node(const GumboNode *const node) const;

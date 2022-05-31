@@ -6,9 +6,9 @@
 
 #include <Godot.hpp>
 #include <Variant.hpp>
-#include "Dictionary.hpp"
-#include "GodotGlobal.hpp"
-#include "String.hpp"
+#include <Dictionary.hpp>
+#include <GodotGlobal.hpp>
+#include <String.hpp>
 #include <gumbo.h>
 #include <string_buffer.h>
 #include <error.h>
@@ -35,6 +35,7 @@ void HTMLParser::_register_methods() {
   godot::register_property<HTMLParser, unsigned int>("max_tree_depth", &HTMLParser::max_tree_depth, kGumboDefaultOptions.max_tree_depth);
   godot::register_property<HTMLParser, int>("max_errors", &HTMLParser::max_errors, kGumboDefaultOptions.max_errors);
   godot::register_property<HTMLParser, bool>("collect_whitespace", &HTMLParser::collect_whitespace, false);
+  godot::register_property<HTMLParser, bool>("collect_comments", &HTMLParser::collect_comments, false);
 }
 
 void HTMLParser::_init() {
@@ -111,8 +112,11 @@ std::optional<godot::Dictionary> HTMLParser::parse_node(const GumboNode *const n
       break;
     }
     case GUMBO_NODE_COMMENT: {
-      result["type"] = "comment";
-      result["text"] = node->v.text.text;
+      if (this->collect_comments) {
+        result["type"] = "comment";
+        result["text"] = node->v.text.text;
+      }
+      else return {}; // Nothing
       break;
     }
     case GUMBO_NODE_CDATA: {
@@ -165,6 +169,7 @@ godot::Dictionary HTMLParser::parse(const godot::String text) const {
   GumboOutput* output = gumbo_parse_with_options(&opts, ch_str.get_data(), ch_str.length());
 
   // todo: Should return HTMLParserError object instead, containing error info
+  // todo: Doesn't look like it's getting triggered at all?
   if (output->status != GUMBO_STATUS_OK) {
     GumboVector errors = output->errors;
     for (unsigned int i = 0; i < errors.length; ++i) {
