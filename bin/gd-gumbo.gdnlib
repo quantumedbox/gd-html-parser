@@ -7,10 +7,10 @@ reloadable=false
 
 [entry]
 
-Windows.64="res://bin/win64/gd-gumbo.dll"
-Windows.32="res://bin/win32/gd-gumbo.dll"
-X11.64="res://bin/x11/libgd-gumbo.so"
-OSX.64="res://bin/osx/libgd-gumbo.dynlib"
+Windows.64="res://bin/win64/gd-html-parser.dll"
+Windows.32="res://bin/win32/gd-html-parser.dll"
+X11.64="res://bin/x11/libgd-html-parser.so"
+OSX.64="res://bin/osx/libgd-html-parser.dynlib"
 
 [dependencies]
 

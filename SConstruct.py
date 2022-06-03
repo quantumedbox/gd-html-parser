@@ -3,6 +3,8 @@ import os
 import sys
 import subprocess
 
+Copy("LICENCE", "bin/LICENCE")
+
 opts = Variables([], ARGUMENTS)
 
 # Gets the standard flags CC, CCX, etc.
@@ -188,7 +190,7 @@ env.Append(LIBS=[cpp_library, gumbo_library])
 env.Append(CPPPATH=['src/'])
 sources = Glob('src/*.cpp')
 
-library = env.SharedLibrary(target=env['target_path'] + 'gd-gumbo' , source=sources)
+library = env.SharedLibrary(target=env['target_path'] + 'gd-html-parser' , source=sources)
 
 Default(library)
 
