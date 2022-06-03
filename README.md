@@ -1,4 +1,4 @@
-# gd-gumbo HTMLParser
+# gd-html-parser Gumbo Based HTML Parser
 Simple implementation of html/xhtml document walker that outputs node tree representation in form of Godot Dictionary object.
 
 ## Requirements for building
